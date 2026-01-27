@@ -1,0 +1,10 @@
+name = "pic2"
+compatibility_date = "2024-11-01"
+
+[vars]
+JWT_SECRET = "DJh5frrpzTZtfbXMSCcfNwkt3RtKumzNhRwtXkztBZnGb6FaZF44zXMcSPyCSN4GMevKj7fpMzbBKucHbePEJn7Vd3yYCmBzKXCzJyrrksJAG4MFRcxttwCVKBNQSuYsaMAeu2TTvYaVb4SATGHdhPhfNcBpp3PmaNjKAbEuMRxSddNA6tsEp3Dyhy6rz7Qmy45eh7m5GEKw6vXBuRNNTtBVJ7ntJmHFxuJbfFDze3Rs4CaM4jJTbjtmUUWMNb5x"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "db_lmc"
+database_id = "bdfbca88-7e2a-49de-9dae-4f4d935c2e62"
