@@ -14,26 +14,64 @@ export interface ArtworkRow {
 }
 
 export default defineEventHandler(async (event: H3Event) => {
-  // Cloudflare D1 binding is available on event.context.cloudflare.env.DB
-  // For local dev without wrangler dev, we might need a fallback or mock
-  // But Nuxt usually handles this if we run with proper preset
+  const query = getQuery(event)
+  const page = Math.max(1, Number(query.page) || 1)
+  const limit = Math.max(1, Math.min(50, Number(query.limit) || 12))
+  const offset = (page - 1) * limit
   
+  const category = query.category as string
+  const search = query.search as string
+  // Default sort is latest (created_at desc)
+  const sort = query.sort as string
+
   const db = event.context.cloudflare?.env?.DB
   
   if (!db) {
-    // Fallback for standard dev server if bindings aren't loaded (e.g. npm run dev without --host or platform proxy)
-    // However, to see real data we need to run with wrangler or have a way to proxy
-    // For now, let's return mock data if DB is missing to avoid crashing, but warn
-    console.warn('D1 Database binding not found. Ensure you are running with platform proxy enabled.')
-    return []
+    console.warn('D1 Database binding not found.')
+    return {
+      artworks: [],
+      total: 0,
+      page,
+      limit
+    }
   }
 
   try {
-    const { results } = await db.prepare(
-      'SELECT * FROM pics ORDER BY created_at DESC'
-    ).all<ArtworkRow>()
+    let whereClause = 'WHERE 1=1'
+    const bindParams: any[] = []
 
-    return results.map(row => ({
+    // Filter by category
+    if (category && category !== 'all') {
+      whereClause += ' AND category = ?'
+      bindParams.push(category)
+    }
+
+    // Filter by search term
+    if (search) {
+      whereClause += ' AND (title LIKE ? OR description LIKE ?)'
+      bindParams.push(`%${search}%`)
+      bindParams.push(`%${search}%`)
+    }
+
+    // Get Total Count
+    const countSql = `SELECT COUNT(*) as total FROM pics ${whereClause}`
+    const countResult = await db.prepare(countSql).bind(...bindParams).first()
+    const total = countResult ? (countResult.total as number) : 0
+
+    // Get Data
+    let orderClause = 'ORDER BY created_at DESC'
+    if (sort === 'oldest') {
+      orderClause = 'ORDER BY created_at ASC'
+    } else if (sort === 'popular') {
+      orderClause = 'ORDER BY views DESC, created_at DESC' // Assuming views exists
+    }
+
+    const dataSql = `SELECT * FROM pics ${whereClause} ${orderClause} LIMIT ? OFFSET ?`
+    const dataParams = [...bindParams, limit, offset]
+    
+    const { results } = await db.prepare(dataSql).bind(...dataParams).all<ArtworkRow>()
+
+    const artworks = results.map(row => ({
       id: String(row.id),
       title: row.title || '无题',
       description: row.description || '',
@@ -44,6 +82,15 @@ export default defineEventHandler(async (event: H3Event) => {
       views: row.views || 0,
       likes: row.likes || 0
     }))
+
+    return {
+      artworks,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    }
+
   } catch (e) {
     console.error('Database error:', e)
     throw createError({

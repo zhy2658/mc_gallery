@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { filteredArtworks, initArtworks, filters } = useGallery()
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
+
+const { filteredArtworks, initArtworks, filters, page, totalPages, setPage } = useGallery()
 
 useHead({
   title: '苗昀的画廊 - 作品集',
@@ -10,6 +12,37 @@ useHead({
 
 // Ensure data is loaded
 initArtworks()
+
+// Generate page numbers to display
+const displayedPages = computed(() => {
+  const total = totalPages.value
+  const current = page.value
+  const delta = 2 // Number of pages to show around current
+  
+  const range = []
+  for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
+    range.push(i)
+  }
+
+  if (current - delta > 2) {
+    range.unshift('...')
+  }
+  if (current + delta < total - 1) {
+    range.push('...')
+  }
+
+  const pages = []
+  if (total > 0) pages.push(1)
+  pages.push(...range)
+  if (total > 1) pages.push(total)
+  
+  // Dedup and sort just in case logic above overlaps for small totals
+  // Actually simpler logic for small counts:
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+  return pages
+})
 </script>
 
 <template>
@@ -49,11 +82,46 @@ initArtworks()
         </p>
       </div>
       
-      <!-- Pagination (Mock) -->
-      <div class="mt-12 flex justify-center gap-2">
-        <button class="w-10 h-10 rounded-lg flex items-center justify-center bg-sky-500 text-white shadow-lg shadow-sky-500/20">1</button>
-        <button class="w-10 h-10 rounded-lg flex items-center justify-center bg-white dark:bg-dark-card text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">2</button>
-        <button class="w-10 h-10 rounded-lg flex items-center justify-center bg-white dark:bg-dark-card text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">3</button>
+      <!-- Pagination -->
+      <div v-if="totalPages > 1" class="mt-12 flex justify-center items-center gap-2">
+        <!-- Prev Button -->
+        <button 
+          @click="setPage(page - 1)" 
+          :disabled="page === 1"
+          class="w-10 h-10 rounded-lg flex items-center justify-center bg-white dark:bg-dark-card text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label="Previous Page"
+        >
+          <ChevronLeftIcon class="w-5 h-5" />
+        </button>
+
+        <!-- Page Numbers -->
+        <template v-for="(p, index) in displayedPages" :key="index">
+          <button 
+            v-if="typeof p === 'number'"
+            @click="setPage(p)"
+            :class="[
+              'w-10 h-10 rounded-lg flex items-center justify-center transition-colors',
+              page === p 
+                ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/20' 
+                : 'bg-white dark:bg-dark-card text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+            ]"
+          >
+            {{ p }}
+          </button>
+          <span v-else class="w-10 h-10 flex items-center justify-center text-gray-400">
+            {{ p }}
+          </span>
+        </template>
+
+        <!-- Next Button -->
+        <button 
+          @click="setPage(page + 1)" 
+          :disabled="page === totalPages"
+          class="w-10 h-10 rounded-lg flex items-center justify-center bg-white dark:bg-dark-card text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          aria-label="Next Page"
+        >
+          <ChevronRightIcon class="w-5 h-5" />
+        </button>
       </div>
     </div>
   </div>

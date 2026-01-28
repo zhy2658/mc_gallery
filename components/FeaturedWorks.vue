@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ArrowRightIcon } from '@heroicons/vue/24/outline'
+import type { ArtworkResponse } from '~/composables/useGallery'
 
-const { artworks, initArtworks } = useGallery()
+// Fetch featured artworks independently from the gallery state
+// We want the latest 2 items
+const { data } = await useAsyncData<ArtworkResponse>('featured-works', () => $fetch('/api/artworks', {
+  query: {
+    limit: 2,
+    sort: 'latest'
+  }
+}))
 
-// Ensure we have data
-if (artworks.value.length === 0) {
-  initArtworks()
-}
-
-// Get top 2 featured items
-const featured = computed(() => artworks.value.slice(0, 2))
+const featured = computed(() => data.value?.artworks || [])
 </script>
 
 <template>
