@@ -71,8 +71,21 @@ export default defineEventHandler(async (event: H3Event) => {
       db.prepare(dataSql).bind(...dataParams).all()
     ])
 
+    // Debug logging
+    console.log('API Debug:', { 
+      hasDb: !!db,
+      countResult, 
+      dataResultType: typeof dataResult,
+      isDataArray: Array.isArray(dataResult),
+      dataResultKeys: typeof dataResult === 'object' ? Object.keys(dataResult as any) : []
+    })
+
     const total = countResult ? (countResult as any).total : 0
-    const results = (dataResult as any).results as ArtworkRow[]
+    
+    // Robust results extraction
+    const rawData = dataResult as any
+    // Handle both { results: [...] } (Cloudflare D1) and Array (some mocks)
+    const results = (Array.isArray(rawData) ? rawData : (rawData?.results || [])) as ArtworkRow[]
 
     const artworks = results.map(row => ({
       id: String(row.id),

@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     '@nuxt/image'
   ],
   routeRules: {
-    '/api/artworks': { swr: 600 } // Cache API response for 10 minutes to reduce Worker CPU usage
+    '/api/artworks': { swr: 60 } // Cache API response for 60 seconds (1 minute) to balance real-time updates and CPU usage
   },
   app: {
     head: {
