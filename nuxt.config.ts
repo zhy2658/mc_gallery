@@ -6,6 +6,9 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxt/image'
   ],
+  routeRules: {
+    '/api/artworks': { swr: 600 } // Cache API response for 10 minutes to reduce Worker CPU usage
+  },
   app: {
     head: {
       title: '苗昀的画廊',

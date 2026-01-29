@@ -53,23 +53,26 @@ export default defineEventHandler(async (event: H3Event) => {
       bindParams.push(`%${search}%`)
     }
 
-    // Get Total Count
-    const countSql = `SELECT COUNT(*) as total FROM pics ${whereClause}`
-    const countResult = await db.prepare(countSql).bind(...bindParams).first()
-    const total = countResult ? (countResult.total as number) : 0
-
-    // Get Data
+    // Determine Sort Order
     let orderClause = 'ORDER BY created_at DESC'
     if (sort === 'oldest') {
       orderClause = 'ORDER BY created_at ASC'
     } else if (sort === 'popular') {
-      orderClause = 'ORDER BY views DESC, created_at DESC' // Assuming views exists
+      orderClause = 'ORDER BY views DESC, created_at DESC'
     }
 
+    // Get Total Count and Data in parallel
+    const countSql = `SELECT COUNT(*) as total FROM pics ${whereClause}`
     const dataSql = `SELECT * FROM pics ${whereClause} ${orderClause} LIMIT ? OFFSET ?`
     const dataParams = [...bindParams, limit, offset]
     
-    const { results } = await db.prepare(dataSql).bind(...dataParams).all<ArtworkRow>()
+    const [countResult, dataResult] = await Promise.all([
+      db.prepare(countSql).bind(...bindParams).first(),
+      db.prepare(dataSql).bind(...dataParams).all()
+    ])
+
+    const total = countResult ? (countResult as any).total : 0
+    const results = (dataResult as any).results as ArtworkRow[]
 
     const artworks = results.map(row => ({
       id: String(row.id),
