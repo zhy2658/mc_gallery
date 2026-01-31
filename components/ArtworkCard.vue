@@ -20,9 +20,9 @@ const onImageError = () => {
 </script>
 
 <template>
-  <div class="group bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+  <div class="group relative bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
     <!-- Image Container -->
-    <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
+    <div class="relative w-full aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
       <!-- Loading Skeleton -->
       <div 
         v-if="!isLoaded && !hasError"
