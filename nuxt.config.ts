@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     '@nuxt/image'
   ],
   routeRules: {
-    // '/api/artworks': { swr: 60 } // Cache disabled for debugging
+    '/api/artworks': { swr: process.env.NODE_ENV === 'production' ? 60 : 0 }
   },
   app: {
     head: {

@@ -16,6 +16,13 @@ export default defineEventHandler(async (event: H3Event) => {
   const db = event.context.cloudflare?.env?.DB
   
   if (!db) {
+    if (!import.meta.dev) {
+      console.error('D1 Database binding not found in production environment.')
+      throw createError({
+        statusCode: 500,
+        statusMessage: 'Database configuration error: D1 binding missing'
+      })
+    }
     console.warn('D1 Database binding not found. Using Mock Data.')
     return {
       ...getMockArtworks(page, limit, category, search, sort),
