@@ -22,7 +22,7 @@ const toggleMobileMenu = () => {
       <!-- Logo -->
       <NuxtLink to="/" class="flex items-center gap-2 group">
         <div class="bg-sky-400 text-white px-4 py-1.5 rounded-full font-medium transition-transform group-hover:scale-105">
-          苗昀的画廊
+          苗畅的画廊
         </div>
       </NuxtLink>
 

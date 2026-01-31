@@ -19,7 +19,7 @@ export const getMockArtworks = (page: number, limit: number, category: string, s
     description: `这是第 ${i + 1} 个示例艺术作品的描述，展示了独特的创意与风格。`,
     url: `https://picsum.photos/seed/${i + 1}/800/600`,
     category: ['风景', '城市', '静物', '抽象'][i % 4],
-    artist: '苗昀',
+    artist: '苗畅',
     created_at: new Date(Date.now() - i * 86400000).toISOString(),
     views: 100 + i * 10,
     likes: 50 + i * 5,

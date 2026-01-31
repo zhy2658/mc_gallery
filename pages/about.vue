@@ -1,8 +1,8 @@
 <script setup lang="ts">
 useHead({
-  title: '苗昀的画廊 - 关于',
+  title: '苗畅的画廊 - 关于',
   meta: [
-    { name: 'description', content: '关于苗昀，艺术家介绍' }
+    { name: 'description', content: '关于苗畅，艺术家介绍' }
   ]
 })
 </script>
@@ -12,7 +12,7 @@ useHead({
     <div class="container mx-auto px-4 max-w-4xl">
       <div class="text-center mb-16">
         <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-          关于 <span class="text-sky-500">苗昀</span>
+          关于 <span class="text-sky-500">苗畅</span>
         </h1>
         <p class="text-xl text-gray-500 dark:text-gray-400 leading-relaxed">
           "艺术不是模仿，而是创造。每一次落笔，都是与灵魂的对话。"
@@ -23,17 +23,17 @@ useHead({
         <div class="relative rounded-2xl overflow-hidden shadow-2xl">
           <NuxtImg 
             src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=Artist%20portrait%20in%20studio%2C%20natural%20lighting%2C%20creative%20atmosphere%2C%20professional%20photography&image_size=portrait_4_3" 
-            alt="苗昀" 
+            alt="苗畅" 
             class="w-full h-full object-cover"
           />
         </div>
         <div class="space-y-6 text-gray-600 dark:text-gray-300">
           <p>
-            苗昀是一位充满激情的当代艺术家，专注于探索自然与城市之间的微妙关系。
+            苗畅是一位充满激情的当代艺术家，专注于探索自然与城市之间的微妙关系。
             他的作品融合了传统技法与现代审美，创造出既有深意又极具视觉冲击力的艺术语言。
           </p>
           <p>
-            毕业于知名艺术学院，苗昀的作品曾在多个国际画廊展出，并被私人收藏家广泛收藏。
+            毕业于知名艺术学院，苗畅的作品曾在多个国际画廊展出，并被私人收藏家广泛收藏。
             他相信艺术应该触动人心，引发思考，而不仅仅是视觉上的愉悦。
           </p>
           <div class="pt-6">

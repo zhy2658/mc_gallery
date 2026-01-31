@@ -37,7 +37,7 @@ watch(() => route.path, () => {
       <!-- Header -->
       <div class="h-16 flex items-center justify-between px-4 border-b border-gray-100 dark:border-gray-800">
         <div class="bg-sky-400 text-white px-4 py-1.5 rounded-full font-medium">
-          苗昀的画廊
+          苗畅的画廊
         </div>
         <button 
           @click="closeMenu"

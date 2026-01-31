@@ -195,10 +195,10 @@ export const useDarkMode = () => {
 ```typescript
 // 使用Nuxt的useHead composable
 useHead({
-  title: '苗昀的画廊 - 探索艺术之美',
+  title: '苗畅的画廊 - 探索艺术之美',
   meta: [
     { name: 'description', content: '在这里发现世界各地的独特艺术作品，感受创意与灵感的碰撞' },
-    { property: 'og:title', content: '苗昀的画廊' },
+    { property: 'og:title', content: '苗畅的画廊' },
     { property: 'og:description', content: '探索精美的艺术作品收藏' },
     { property: 'og:image', content: '/og-image.jpg' }
   ]

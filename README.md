@@ -1,4 +1,4 @@
-# 苗昀的画廊 (Miaoyun's Gallery)
+# 苗畅的画廊 (Miaoyun's Gallery)
 
 一个基于 Nuxt 3 + Vue 3 + TailwindCSS 构建的现代化个人艺术画廊网站。
 

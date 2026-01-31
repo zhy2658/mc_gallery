@@ -30,7 +30,7 @@ onUnmounted(() => {
     <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
       <div class="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left flex flex-col gap-1">
         <div>
-          <span class="font-medium text-gray-900 dark:text-white">苗昀的画廊</span>
+          <span class="font-medium text-gray-900 dark:text-white">苗畅的画廊</span>
           <span class="mx-2">© 2026</span>
           <span>版权声明：保留所有权利</span>
         </div>

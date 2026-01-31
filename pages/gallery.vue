@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
 
-const { filteredArtworks, initArtworks, filters, page, totalPages, setPage } = useGallery()
+const { filteredArtworks, initArtworks, filters, page, totalPages, setPage, status } = useGallery()
 
 useHead({
-  title: '苗昀的画廊 - 作品集',
+  title: '苗畅的画廊 - 作品集',
   meta: [
     { name: 'description', content: '浏览所有艺术作品，发现更多精彩' }
   ]
@@ -61,9 +61,20 @@ const displayedPages = computed(() => {
       <!-- Filters -->
       <SearchFilter />
 
+      <!-- Loading State -->
+      <div v-if="status === 'pending'" class="grid gap-6" :class="filters.viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'">
+        <div v-for="i in 6" :key="i" class="bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-sm h-[320px] animate-pulse">
+          <div class="h-64 bg-gray-200 dark:bg-gray-700"></div>
+          <div class="p-5 space-y-3">
+            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+            <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+
       <!-- Grid -->
       <div 
-        v-if="filteredArtworks.length > 0"
+        v-else-if="filteredArtworks.length > 0"
         class="grid gap-6"
         :class="filters.viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'"
       >
