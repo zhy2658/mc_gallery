@@ -96,8 +96,9 @@ export default defineEventHandler(async (event: H3Event) => {
       category: row.category || '未分类',
       artist: row.artist || 'Unknown',
       createdAt: new Date(row.created_at),
-      views: row.views || 0,
-      likes: row.likes || 0
+      // Support both DB columns (visit, like) and Mock data (views, likes)
+      views: row.visit ?? row.views ?? 0,
+      likes: row.like ?? row.likes ?? 0
     }))
 
     console.log(`Returning ${artworks.length} artworks`)

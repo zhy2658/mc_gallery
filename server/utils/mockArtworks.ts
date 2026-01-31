@@ -9,6 +9,8 @@ export interface ArtworkRow {
   artist: string | null
   likes?: number
   views?: number
+  like?: number
+  visit?: number
 }
 
 export const getMockArtworks = (page: number, limit: number, category: string, search: string, sort: string) => {
