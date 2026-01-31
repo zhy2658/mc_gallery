@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const runtime = ref('')
-let timer: NodeJS.Timer | null = null
+let timer: ReturnType<typeof setInterval> | null = null
 
 const updateRuntime = () => {
   const startDate = new Date('2025-11-01T00:00:00')

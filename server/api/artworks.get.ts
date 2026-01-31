@@ -1,20 +1,9 @@
 import type { H3Event } from 'h3'
-
-export interface ArtworkRow {
-  id: number
-  url: string
-  title: string
-  description: string
-  user_id: number | null
-  created_at: string
-  category: string | null
-  artist: string | null
-  likes?: number
-  views?: number
-}
+import { getMockArtworks, type ArtworkRow } from '~/server/utils/mockArtworks'
 
 export default defineEventHandler(async (event: H3Event) => {
   const query = getQuery(event)
+  console.log('Request Query:', query)
   const page = Math.max(1, Number(query.page) || 1)
   const limit = Math.max(1, Math.min(50, Number(query.limit) || 12))
   const offset = (page - 1) * limit
@@ -27,18 +16,16 @@ export default defineEventHandler(async (event: H3Event) => {
   const db = event.context.cloudflare?.env?.DB
   
   if (!db) {
-    console.warn('D1 Database binding not found.')
+    console.warn('D1 Database binding not found. Using Mock Data.')
     return {
-      artworks: [],
-      total: 0,
-      page,
-      limit
+      ...getMockArtworks(page, limit, category, search, sort),
+      source: 'mock'
     }
   }
 
   try {
     let whereClause = 'WHERE 1=1'
-    const bindParams: any[] = []
+    const bindParams: (string | number)[] = []
 
     // Filter by category
     if (category && category !== 'all') {
@@ -64,8 +51,14 @@ export default defineEventHandler(async (event: H3Event) => {
     // Get Total Count and Data in parallel
     const countSql = `SELECT COUNT(*) as total FROM pics ${whereClause}`
     const dataSql = `SELECT * FROM pics ${whereClause} ${orderClause} LIMIT ? OFFSET ?`
-    const dataParams = [...bindParams, limit, offset]
     
+    // Ensure limit and offset are integers
+    const safeLimit = Math.floor(limit)
+    const safeOffset = Math.floor(offset)
+    const dataParams = [...bindParams, safeLimit, safeOffset]
+    
+    console.log('D1 Query:', { countSql, dataSql, bindParams, dataParams })
+
     const [countResult, dataResult] = await Promise.all([
       db.prepare(countSql).bind(...bindParams).first(),
       db.prepare(dataSql).bind(...dataParams).all()
@@ -77,7 +70,8 @@ export default defineEventHandler(async (event: H3Event) => {
       countResult, 
       dataResultType: typeof dataResult,
       isDataArray: Array.isArray(dataResult),
-      dataResultKeys: typeof dataResult === 'object' ? Object.keys(dataResult as any) : []
+      // @ts-ignore
+      dataResultKeys: typeof dataResult === 'object' ? Object.keys(dataResult || {}) : []
     })
 
     const total = countResult ? (countResult as any).total : 0
@@ -99,12 +93,15 @@ export default defineEventHandler(async (event: H3Event) => {
       likes: row.likes || 0
     }))
 
+    console.log(`Returning ${artworks.length} artworks`)
+
     return {
       artworks,
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit)
+      totalPages: Math.ceil(total / limit),
+      source: 'd1'
     }
 
   } catch (e) {
