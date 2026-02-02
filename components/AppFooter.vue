@@ -1,9 +1,12 @@
 <script setup lang="ts">
 const runtime = ref('')
+const startYear = 2026
+const currentYear = new Date().getFullYear()
+const copyrightYear = currentYear === startYear ? `${startYear}` : `${startYear}-${currentYear}`
 let timer: ReturnType<typeof setInterval> | null = null
 
 const updateRuntime = () => {
-  const startDate = new Date('2025-11-01T00:00:00')
+  const startDate = new Date('2026-01-20T00:00:00')
   const now = new Date()
   const diffTime = now.getTime() - startDate.getTime()
   
@@ -31,11 +34,12 @@ onUnmounted(() => {
       <div class="text-sm text-gray-500 dark:text-gray-400 text-center md:text-left flex flex-col gap-1">
         <div>
           <span class="font-medium text-gray-900 dark:text-white">苗畅的画廊</span>
-          <span class="mx-2">© 2026</span>
+          <span class="mx-2">© {{ copyrightYear }}</span>
           <span>版权声明：保留所有权利</span>
         </div>
         <div v-if="runtime" class="text-xs opacity-80">
-          {{ runtime }}
+          <span class="mr-2">2026年1月20日</span>
+          <span>{{ runtime }}</span>
         </div>
       </div>
       
