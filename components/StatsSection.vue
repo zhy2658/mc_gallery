@@ -1,10 +1,19 @@
 <script setup lang="ts">
-const stats = [
-  { label: '艺术作品', value: '1250' },
-  { label: '艺术家', value: '89' },
-  { label: '艺术分类', value: '24' },
-  { label: '访客数量', value: '15680' }
-]
+interface StatsData {
+  totalArtworks: number
+  totalArtists: number
+  totalCategories: number
+  totalViews: number
+}
+
+const { data: statsData } = await useFetch<StatsData>('/api/stats')
+
+const stats = computed(() => [
+  { label: '艺术作品', value: statsData.value?.totalArtworks ?? 0 },
+  { label: '艺术家', value: statsData.value?.totalArtists ?? 0 },
+  { label: '艺术分类', value: statsData.value?.totalCategories ?? 0 },
+  { label: '访客数量', value: statsData.value?.totalViews ?? 0 }
+])
 </script>
 
 <template>
